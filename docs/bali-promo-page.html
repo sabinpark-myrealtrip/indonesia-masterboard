@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>발리 숙소 특가 모음 · 마이리얼트립</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f8f8f8;
+      color: #1a1a1a;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* ── 공통 ── */
+    .section { padding: 36px 20px; }
+    .section + .section { padding-top: 0; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 17px;
+      background: #00c2a8;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      letter-spacing: -0.01em;
+    }
+    .btn-primary:active { opacity: 0.88; }
+
+    /* ── 섹션 1: HERO ── */
+    .hero {
+      position: relative;
+      height: 480px;
+      background: linear-gradient(160deg, #0a3d3a 0%, #0e5c55 40%, #1a7a6e 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px 24px;
+    }
+    .hero-bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+      background: #fff;
+    }
+    .hero-bg-circle.c1 { width: 300px; height: 300px; top: -80px; right: -60px; }
+    .hero-bg-circle.c2 { width: 180px; height: 180px; top: 100px; left: -50px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 600;
+      width: fit-content;
+      margin-bottom: 14px;
+    }
+    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: #4dffd6; display: inline-block; }
+    .hero h1 {
+      font-size: 30px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .hero h1 em { color: #4dffd6; font-style: normal; }
+    .hero p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .hero-urgency {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    .hero-urgency .flame { font-size: 18px; }
+    .hero-urgency .text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.4; }
+    .hero-urgency strong { color: #fff; font-weight: 800; }
+
+    /* 이미지 placeholder */
+    .hero-img-row {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 220px;
+      display: flex;
+      gap: 2px;
+      opacity: 0.45;
+    }
+    .hero-img-row div {
+      flex: 1;
+      background: linear-gradient(180deg, #2dd4bf30, #0e5c55);
+    }
+    .hero-img-row div:nth-child(1) { background: linear-gradient(135deg, #134e4a, #0f766e); }
+    .hero-img-row div:nth-child(2) { background: linear-gradient(135deg, #0f766e, #115e59); }
+    .hero-img-row div:nth-child(3) { background: linear-gradient(135deg, #115e59, #134e4a); }
+
+    /* ── 섹션 2: 사회적 증거 ── */
+    .social-proof { background: #fff; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #00c2a8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .wish-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .wish-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1.5px solid #f0f0f0;
+      background: #fff;
+    }
+    .wish-card.rank1 { border-color: #00c2a8; background: #f0fefb; }
+    .wish-rank {
+      font-size: 22px;
+      font-weight: 900;
+      color: #e0e0e0;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .wish-card.rank1 .wish-rank { color: #00c2a8; }
+    .wish-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .wish-thumb.t1 { background: linear-gradient(135deg, #0f766e, #2dd4bf); }
+    .wish-thumb.t2 { background: linear-gradient(135deg, #0369a1, #38bdf8); }
+    .wish-thumb.t3 { background: linear-gradient(135deg, #7c3aed, #c4b5fd); }
+    .wish-info { flex: 1; min-width: 0; }
+    .wish-name { font-size: 14px; font-weight: 800; color: #1a1a1a; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wish-meta { display: flex; align-items: center; gap: 8px; }
+    .wish-heart { font-size: 12px; color: #ff5a5f; font-weight: 700; }
+    .wish-star { font-size: 12px; color: #f59e0b; font-weight: 600; }
+    .wish-price { font-size: 12px; color: #666; }
+    .wish-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 100px; }
+    .wish-badge.best { background: #fff0f0; color: #ff5a5f; }
+    .wish-badge.popular { background: #f0f9ff; color: #0369a1; }
+
+    /* ── 섹션 3: 마리트 1등 ── */
+    .marit-section { background: #0e1a18; }
+    .marit-section .section-label { color: #4dffd6; }
+    .marit-section .section-title { color: #fff; }
+    .marit-section .section-sub { color: rgba(255,255,255,0.55); margin-bottom: 20px; }
+    .marit-card {
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(150deg, #134e4a, #0f766e);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .marit-card-top {
+      padding: 24px 20px 20px;
+    }
+    .marit-no1-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #4dffd6;
+      color: #0a3d3a;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .marit-card h3 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .marit-card .marit-eng { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+    .marit-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .benefit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .benefit-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .benefit-text { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; }
+    .benefit-text strong { color: #fff; font-weight: 800; }
+    .marit-price-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .marit-price-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+    .marit-price { font-size: 24px; font-weight: 900; color: #4dffd6; letter-spacing: -0.02em; }
+    .marit-price span { font-size: 14px; }
+    .marit-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #4dffd6;
+      color: #0a3d3a;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 16px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 나머지 아야나 시리즈 */
+    .ayana-series-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .ayana-mini-cards {
+      display: flex;
+      gap: 10px;
+    }
+    .ayana-mini {
+      flex: 1;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px 12px;
+      cursor: pointer;
+    }
+    .ayana-mini:active { background: rgba(255,255,255,0.12); }
+    .ayana-mini-thumb {
+      width: 100%;
+      height: 70px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .ayana-mini-thumb.th1 { background: linear-gradient(135deg, #0369a1, #38bdf8); }
+    .ayana-mini-thumb.th2 { background: linear-gradient(135deg, #7c3aed, #c4b5fd); }
+    .ayana-mini-name { font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 3px; line-height: 1.3; }
+    .ayana-mini-tag { font-size: 10px; color: rgba(255,255,255,0.5); }
+    .ayana-mini-price { font-size: 13px; font-weight: 800; color: #4dffd6; margin-top: 6px; }
+
+    /* ── 섹션 4: 브릿지 ── */
+    .bridge-section {
+      background: #fff;
+      text-align: center;
+    }
+    .bridge-section .section-title { margin-bottom: 8px; }
+    .journey-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 24px 0 16px;
+    }
+    .journey-stop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .journey-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .journey-icon.i1 { background: #fff7ed; }
+    .journey-icon.i2 { background: #f0fdf4; }
+    .journey-icon.i3 { background: #f0f9ff; }
+    .journey-label { font-size: 11px; font-weight: 700; color: #555; }
+    .journey-sublabel { font-size: 10px; color: #aaa; }
+    .journey-arrow {
+      font-size: 16px;
+      color: #ddd;
+      padding: 0 8px;
+      margin-bottom: 20px;
+    }
+    .bridge-sub {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      background: #f8f8f8;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    /* ── 섹션 5: 지역별 모음 ── */
+    .regions-section { background: #fff; padding-top: 0; }
+    .tab-wrap {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 20px 16px;
+      scrollbar-width: none;
+    }
+    .tab-wrap::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e8e8e8;
+      background: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      text-align: left;
+    }
+    .tab-btn.active {
+      background: #0e1a18;
+      border-color: #0e1a18;
+    }
+    .tab-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #888;
+      line-height: 1.3;
+    }
+    .tab-btn.active .tab-name { color: #fff; }
+    .tab-sub {
+      font-size: 10px;
+      font-weight: 500;
+      color: #bbb;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+    .tab-btn.active .tab-sub { color: rgba(255,255,255,0.55); }
+    .region-header {
+      padding: 0 20px 16px;
+    }
+    .region-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.02em; }
+    .region-desc { font-size: 13px; color: #888; }
+    .hotel-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 20px;
+    }
+    .hotel-card {
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1.5px solid #f0f0f0;
+      background: #fff;
+      cursor: pointer;
+    }
+    .hotel-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .hotel-thumb.h1 { background: linear-gradient(135deg, #fde68a, #f59e0b); }
+    .hotel-thumb.h2 { background: linear-gradient(135deg, #bbf7d0, #16a34a); }
+    .hotel-thumb.h3 { background: linear-gradient(135deg, #bfdbfe, #2563eb); }
+    .hotel-thumb.h4 { background: linear-gradient(135deg, #fecaca, #dc2626); }
+    .hotel-thumb.h5 { background: linear-gradient(135deg, #e9d5ff, #7c3aed); }
+    .hotel-info { flex: 1; min-width: 0; }
+    .hotel-name { font-size: 14px; font-weight: 800; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hotel-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+    .hotel-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; background: #f3f4f6; color: #555; }
+    .hotel-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .hotel-star { font-size: 12px; color: #f59e0b; font-weight: 600; }
+    .hotel-price { font-size: 15px; font-weight: 900; color: #1a1a1a; }
+    .hotel-price span { font-size: 11px; font-weight: 500; color: #888; }
+    .more-btn {
+      display: block;
+      margin: 16px 20px 0;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e8e8e8;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      color: #555;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    /* ── 섹션 6: CTA ── */
+    .cta-section {
+      background: linear-gradient(160deg, #0a3d3a, #0e5c55);
+      padding: 40px 24px 48px;
+      text-align: center;
+    }
+    .cta-urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .cta-section h2 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.3;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+    .cta-section h2 em { color: #4dffd6; font-style: normal; }
+    .cta-section p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .cta-section .btn-primary {
+      background: #4dffd6;
+      color: #0a3d3a;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .cta-note { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+    /* 구분선 */
+    .divider { height: 8px; background: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════
+       섹션 1 · HERO
+  ══════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg-circle c1"></div>
+    <div class="hero-bg-circle c2"></div>
+    <div class="hero-img-row">
+      <div></div><div></div><div></div>
+    </div>
+
+    <div class="hero-badge">
+      <span></span> 마이리얼트립 발리 특가
+    </div>
+    <h1>발리 숙소,<br>여기서 고르면 <em>돼요</em></h1>
+    <p>한국인이 많이 찾는 순서대로,<br>마이리얼트립이 다 모아뒀어요</p>
+
+    <div class="hero-urgency">
+      <div class="flame">🔥</div>
+      <div class="text">
+        <strong>8월 체크인 최저가</strong>는 6월 18일이면 끝나요<br>
+        지금 예약하는 게 제일 싸요
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════
+       섹션 2 · 사회적 증거
+  ══════════════════════════════════ -->
+  <section class="section social-proof">
+    <div class="section-label">MOST WANTED</div>
+    <h2 class="section-title">발리 가면<br>아야나는 거의 필수예요</h2>
+    <p class="section-sub">마이리얼트립 발리 찜 1위·2위·3위,<br>전부 아야나예요</p>
+
+    <div class="wish-cards">
+      <div class="wish-card rank1">
+        <div class="wish-rank">1</div>
+        <div class="wish-thumb t1">🏖</div>
+        <div class="wish-info">
+          <div class="wish-name">마리트 바이 아야나 발리</div>
+          <div class="wish-meta">
+            <span class="wish-heart">♥ 1,233</span>
+            <span class="wish-star">★ 4.7</span>
+            <span class="wish-price">492,568원~</span>
+          </div>
+        </div>
+        <div class="wish-badge best">찜 1위</div>
+      </div>
+
+      <div class="wish-card">
+        <div class="wish-rank">2</div>
+        <div class="wish-thumb t2">🌊</div>
+        <div class="wish-info">
+          <div class="wish-name">아야나 리조트 발리</div>
+          <div class="wish-meta">
+            <span class="wish-heart">♥ 715</span>
+            <span class="wish-star">★ 4.7</span>
+            <span class="wish-price">427,054원~</span>
+          </div>
+        </div>
+        <div class="wish-badge popular">찜 2위</div>
+      </div>
+
+      <div class="wish-card">
+        <div class="wish-rank">3</div>
+        <div class="wish-thumb t3">✨</div>
+        <div class="wish-info">
+          <div class="wish-name">아야나 세가라 발리</div>
+          <div class="wish-meta">
+            <span class="wish-heart">♥ 600</span>
+            <span class="wish-star">★ 4.7</span>
+            <span class="wish-price">407,273원~</span>
+          </div>
+        </div>
+        <div class="wish-badge popular">찜 3위</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════
+       섹션 3 · 마리트 1등 포인트
+  ══════════════════════════════════ -->
+  <section class="section marit-section">
+    <div class="section-label">BEST PICK</div>
+    <h2 class="section-title">그 중에서도<br>마리트가 1등이에요</h2>
+    <p class="section-sub">찜 수도 예약 수도 아야나 시리즈 중 압도적 1위<br>가격은 제일 합리적, 혜택은 제일 많아요</p>
+
+    <!-- 마리트 메인 카드 -->
+    <div class="marit-card">
+      <div class="marit-card-top">
+        <div class="marit-no1-badge">🏆 찜·예약 1위</div>
+        <h3>마리트 바이 아야나</h3>
+        <div class="marit-eng">RIMBA by AYANA Bali</div>
+
+        <div class="marit-benefits">
+          <div class="benefit-row">
+            <div class="benefit-icon">🍹</div>
+            <div class="benefit-text"><strong>락바 우선입장</strong> 포함 옵션 있음</div>
+          </div>
+          <div class="benefit-row">
+            <div class="benefit-icon">🌅</div>
+            <div class="benefit-text">짐바란 절벽뷰 · <strong>선셋이 가장 예쁜 아야나</strong></div>
+          </div>
+          <div class="benefit-row">
+            <div class="benefit-icon">💰</div>
+            <div class="benefit-text">아야나 시리즈 중 <strong>가장 합리적인 가격</strong></div>
+          </div>
+        </div>
+
+        <div class="marit-price-row">
+          <div>
+            <div class="marit-price-label">최저가 시작</div>
+            <div class="marit-price">492,568<span>원~</span></div>
+          </div>
+          <button class="marit-cta">보러가기 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 나머지 아야나 -->
+    <div class="ayana-series-title">다른 아야나 시리즈도 볼게요</div>
+    <div class="ayana-mini-cards">
+      <div class="ayana-mini">
+        <div class="ayana-mini-thumb th1"></div>
+        <div class="ayana-mini-name">아야나 리조트 발리</div>
+        <div class="ayana-mini-tag">🌊 오션뷰 · 시그니처 풀</div>
+        <div class="ayana-mini-price">427,054원~</div>
+      </div>
+      <div class="ayana-mini">
+        <div class="ayana-mini-thumb th2"></div>
+        <div class="ayana-mini-name">아야나 세가라 발리</div>
+        <div class="ayana-mini-tag">✨ 럭셔리 · 성인 전용</div>
+        <div class="ayana-mini-price">407,273원~</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════
+       섹션 4 · 브릿지
+  ══════════════════════════════════ -->
+  <section class="section bridge-section">
+    <h2 class="section-title">발리는 숙소 하나로<br>안 끝나잖아요</h2>
+
+    <div class="journey-row">
+      <div class="journey-stop">
+        <div class="journey-icon i1">✈️</div>
+        <div class="journey-label">짐바란</div>
+        <div class="journey-sublabel">도착·첫날</div>
+      </div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-stop">
+        <div class="journey-icon i2">🌿</div>
+        <div class="journey-label">우붓</div>
+        <div class="journey-sublabel">자연·힐링</div>
+      </div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-stop">
+        <div class="journey-icon i3">🎉</div>
+        <div class="journey-label">꾸따</div>
+        <div class="journey-sublabel">쇼핑·나이트</div>
+      </div>
+    </div>
+
+    <div class="bridge-sub">
+      지역별 인기 숙소, 한 번에 골라보세요 👇
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       섹션 5 · 지역별 모음
+  ══════════════════════════════════ -->
+  <section class="regions-section section">
+    <!-- 탭 -->
+    <div class="tab-wrap">
+      <button class="tab-btn active" onclick="switchTab(this,'jimbaran')">
+        <div class="tab-name">짐바란/울루와뚜</div>
+        <div class="tab-sub">발리 최고 선셋 · 고급 리조트</div>
+      </button>
+      <button class="tab-btn" onclick="switchTab(this,'kuta')">
+        <div class="tab-name">꾸따/스미냑</div>
+        <div class="tab-sub">서핑·나이트라이프 · 공항 5분</div>
+      </button>
+      <button class="tab-btn" onclick="switchTab(this,'ubud')">
+        <div class="tab-name">우붓</div>
+        <div class="tab-sub">자연 속 힐링 · 커플/허니문</div>
+      </button>
+      <button class="tab-btn" onclick="switchTab(this,'nusadua')">
+        <div class="tab-name">누사두아</div>
+        <div class="tab-sub">가족 여행 · 럭셔리 리조트</div>
+      </button>
+      <button class="tab-btn" onclick="switchTab(this,'sanur')">
+        <div class="tab-name">사누르</div>
+        <div class="tab-sub">조용한 현지 감성 · 장기 체류</div>
+      </button>
+    </div>
+
+    <!-- 지역 설명 -->
+    <div class="region-header">
+      <div id="region-title" class="region-title">짐바란 / 울루와뚜</div>
+      <div id="region-desc" class="region-desc">✈️ 공항 가깝고, 선셋이 제일 예뻐요</div>
+    </div>
+
+    <!-- 호텔 카드 -->
+    <div id="hotel-list" class="hotel-cards">
+      <div class="hotel-card">
+        <div class="hotel-thumb h1">🏖</div>
+        <div class="hotel-info">
+          <div class="hotel-name">마리트 바이 아야나 발리</div>
+          <div class="hotel-tags">
+            <span class="hotel-tag">찜 1위</span>
+            <span class="hotel-tag">락바 포함</span>
+          </div>
+          <div class="hotel-bottom">
+            <span class="hotel-star">★ 4.7</span>
+            <div class="hotel-price">492,568<span>원~</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-thumb h2">🌅</div>
+        <div class="hotel-info">
+          <div class="hotel-name">아야나 리조트 발리</div>
+          <div class="hotel-tags">
+            <span class="hotel-tag">오션뷰</span>
+            <span class="hotel-tag">찜 2위</span>
+          </div>
+          <div class="hotel-bottom">
+            <span class="hotel-star">★ 4.7</span>
+            <div class="hotel-price">427,054<span>원~</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-thumb h3">🌿</div>
+        <div class="hotel-info">
+          <div class="hotel-name">무벤픽 리조트 짐바란</div>
+          <div class="hotel-tags">
+            <span class="hotel-tag">올인클루시브</span>
+          </div>
+          <div class="hotel-bottom">
+            <span class="hotel-star">★ 4.5</span>
+            <div class="hotel-price">311,000<span>원~</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="more-btn">짐바란 숙소 더 보기 →</button>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════
+       섹션 6 · CTA
+  ══════════════════════════════════ -->
+  <section class="cta-section">
+    <div class="cta-urgency-badge">🔥 6월 18일 마감</div>
+    <h2>여름 발리,<br>지금 예약이<br><em>제일 싸요</em></h2>
+    <p>8월 체크인 기준 최저가는<br>6월 18일이면 끝나요</p>
+    <button class="btn-primary">지금 예약하기</button>
+    <div class="cta-note">마이리얼트립 단독 특가 · 유류할증료 포함</div>
+  </section>
+
+  <script>
+    const REGION_DATA = {
+      jimbaran: {
+        title: '짐바란 / 울루와뚜',
+        desc: '발리 최고 선셋 명소 · 공항 가까운 고급 리조트 밀집',
+      },
+      kuta: {
+        title: '꾸따 / 스미냑',
+        desc: '서핑 · 나이트라이프 · 쇼핑 — 공항에서 5분',
+      },
+      ubud: {
+        title: '우붓',
+        desc: '논밭·정글·힐링 · 커플/허니문에 딱 맞아요',
+      },
+      nusadua: {
+        title: '누사두아',
+        desc: '파도 잔잔한 해변 · 가족 여행 · 럭셔리 리조트',
+      },
+      sanur: {
+        title: '사누르',
+        desc: '조용한 현지 감성 · 일출 해변 · 장기 체류 추천',
+      },
+    };
+
+    function switchTab(el, key) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const d = REGION_DATA[key];
+      document.getElementById('region-title').textContent = d.title;
+      document.getElementById('region-desc').textContent = d.desc;
+      document.querySelector('.more-btn').textContent = d.title + ' 숙소 더 보기 →';
+    }
+  </script>
+</body>
+</html>

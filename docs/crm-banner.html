@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>발리 CRM 소재 개선안 A/B</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d0d0d;
+      padding: 52px 40px;
+      font-family: 'Noto Sans KR', -apple-system, sans-serif;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .banner-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .label {
+      color: rgba(255,255,255,0.9);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .desc {
+      color: #666;
+      font-size: 12px;
+      margin-top: -6px;
+    }
+
+    /* ─── BANNER BASE ─── */
+    .banner {
+      width: 680px;
+      height: 476px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Background: CSS gradient simulating teal Bali pool + dark overlay.
+       In production, replace with: background-image: url('bali-pool.jpg');
+       and keep the ::before overlay on top. */
+    .banner-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg,
+          rgba(8, 24, 38, 0.72) 0%,
+          rgba(12, 48, 66, 0.50) 28%,
+          rgba(18, 66, 86, 0.38) 58%,
+          rgba(5, 16, 26, 0.86) 100%
+        ),
+        linear-gradient(155deg,
+          #081e2e 0%,
+          #0e4258 16%,
+          #146c7c 32%,
+          #1a8492 48%,
+          #157a8a 62%,
+          #0c4858 78%,
+          #071828 100%
+        );
+      z-index: 0;
+    }
+
+    /* Subtle right-side vignette (mimics palm shadows in photo) */
+    .banner-bg::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(4,16,26,0.45));
+    }
+
+    /* ─── BODY ─── */
+    .banner-body {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      padding: 26px 30px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── CTA BAR ─── */
+    .cta-bar {
+      position: relative;
+      z-index: 2;
+      height: 60px;
+      flex-shrink: 0;
+      background: linear-gradient(90deg,
+        #5c3a00 0%, #9e6900 15%, #d49810 30%,
+        #f2c42a 50%,
+        #d49810 70%, #9e6900 85%, #5c3a00 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .cta-text {
+      font-size: 18px;
+      font-weight: 900;
+      color: #140900;
+      letter-spacing: 0.1px;
+    }
+
+    .cta-arrow {
+      font-size: 18px;
+      font-weight: 900;
+      color: #140900;
+    }
+
+    /* ─── TOP BADGE ─── */
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      width: fit-content;
+      letter-spacing: -0.2px;
+    }
+
+    .badge-dark {
+      background: rgba(16, 18, 22, 0.90);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .badge-amber {
+      background: linear-gradient(135deg, #d96208, #f08d10);
+      color: #fff;
+      box-shadow: 0 2px 14px rgba(230,120,8,0.55);
+    }
+
+    .badge-red {
+      background: linear-gradient(135deg, #c41a1a, #e02828);
+      color: #fff;
+      box-shadow: 0 2px 14px rgba(210,24,24,0.55);
+    }
+
+    .badge-purple {
+      background: linear-gradient(135deg, #5a2d8a, #7a42b8);
+      color: #fff;
+      box-shadow: 0 2px 14px rgba(100,50,180,0.55);
+    }
+
+    /* ─── URGENCY NOTE ─── */
+    .urgency-note {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      margin-top: 12px;
+      letter-spacing: -0.1px;
+    }
+
+    /* ─── HEADLINES ─── */
+    .hl-white {
+      font-size: 35px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.14;
+      letter-spacing: -0.9px;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.65);
+      margin-bottom: 3px;
+    }
+
+    .hl-gold {
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.18;
+      letter-spacing: -0.9px;
+      background: linear-gradient(135deg, #FFD700 0%, #F2A600 40%, #FFE44A 70%, #F0C030 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 1px 6px rgba(190,130,0,0.55));
+      margin-bottom: 18px;
+    }
+
+    /* ─── BENEFITS ─── */
+    .benefits-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 14px;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: rgba(255,255,255,0.88);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .check {
+      color: #FFD700;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .b-sep {
+      width: 1px;
+      height: 11px;
+      background: rgba(255,255,255,0.28);
+      margin: 0 11px;
+    }
+
+    /* ─── SOCIAL PROOF ─── */
+    .social-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.38);
+      border-radius: 10px;
+      padding: 9px 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .proof-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .proof-icon {
+      font-size: 13px;
+    }
+
+    .p-sep {
+      width: 1px;
+      height: 13px;
+      background: rgba(255,255,255,0.22);
+    }
+
+    /* ─── PRODUCT ROW ─── */
+    .product-row {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.80);
+      margin-bottom: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    .product-sep {
+      color: rgba(255,255,255,0.35);
+      margin: 0 5px;
+    }
+
+    /* ─── STARBURST SEAL ─── */
+    .seal-wrap {
+      position: absolute;
+      right: 28px;
+      bottom: 68px;
+      z-index: 3;
+      width: 90px;
+      height: 90px;
+    }
+
+    .seal-star {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #D4A014, #F0C038, #C89010, #F0C038, #D4A014);
+      clip-path: polygon(
+        50% 0%,   56% 16%,  71%  5%,  63% 21%,  79% 20%,
+        68% 33%,  83% 38%,  70% 47%,  82% 56%,  67% 59%,
+        75% 74%,  60% 72%,  60% 88%,  50% 80%,  40% 88%,
+        40% 72%,  25% 74%,  33% 59%,  18% 56%,  30% 47%,
+        17% 38%,  32% 33%,  21% 20%,  37% 21%,  29%  5%,
+        44% 16%
+      );
+    }
+
+    .seal-inner {
+      position: absolute;
+      inset: 9px;
+      background: radial-gradient(circle at 40% 38%, #F0C840, #C89010);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .seal-text {
+      font-size: 12px;
+      font-weight: 900;
+      color: #2a1200;
+      line-height: 1.35;
+    }
+
+    /* ─── SPACER ─── */
+    .spacer { flex: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════
+       VERSION A — 개인화 (아야나 찜 미구매 80명)
+       ════════════════════════════════════════════ -->
+  <div class="banner-group">
+    <div class="label">Version A — 1순위 세그먼트 (아야나 찜 미구매 80명)</div>
+    <div class="desc">개인화 훅 + 사회적 증거 + 즉시 구매 유도</div>
+
+    <div class="banner">
+      <div class="banner-bg"></div>
+
+      <div class="banner-body">
+        <!-- Top badge -->
+        <div class="top-badge badge-amber">
+          ⏰ 찜해두신 숙소, 아직 자리 있어요
+        </div>
+
+        <!-- Headline -->
+        <div class="hl-white">아야나 리조트 발리</div>
+        <div class="hl-gold">성수기 시작 전<br>지금이 가장 저렴합니다</div>
+
+        <!-- Benefits -->
+        <div class="benefits-row">
+          <div class="benefit"><span class="check">✓</span> 무료취소 보장</div>
+          <div class="b-sep"></div>
+          <div class="benefit"><span class="check">✓</span> 조식포함 특가</div>
+          <div class="b-sep"></div>
+          <div class="benefit"><span class="check">✓</span> 한정 수량</div>
+        </div>
+
+        <!-- Social proof -->
+        <div class="social-row">
+          <div class="proof-item"><span class="proof-icon">🤍</span> 찜 1,233개</div>
+          <div class="p-sep"></div>
+          <div class="proof-item"><span class="proof-icon">⭐</span> 4.7</div>
+          <div class="p-sep"></div>
+          <div class="proof-item"><span class="proof-icon">💬</span> 리뷰 1,006개</div>
+        </div>
+      </div>
+
+      <!-- Starburst -->
+      <div class="seal-wrap">
+        <div class="seal-star"></div>
+        <div class="seal-inner">
+          <div class="seal-text">한국인<br>찜 1위</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-bar">
+        <span class="cta-text">지금 예약하기</span>
+        <span class="cta-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       VERSION B — 긴박감 (발리 관심 유저 1,079명+)
+       ════════════════════════════════════════════ -->
+  <div class="banner-group">
+    <div class="label">Version B — 2순위 세그먼트 (발리 관심 유저 대량 발송)</div>
+    <div class="desc">단독 혜택 앵글 + 조식·락바 강조 + urgency 보조</div>
+
+    <div class="banner">
+      <div class="banner-bg"></div>
+
+      <div class="banner-body">
+        <!-- Top badge -->
+        <div class="top-badge badge-purple">
+          🥂 마이리얼트립 단독 혜택
+        </div>
+
+        <!-- Headline -->
+        <div class="hl-white">올여름 발리 아야나,</div>
+        <div class="hl-gold">조식 + 락바 우선입장<br>포함 특가</div>
+
+        <!-- Benefits -->
+        <div class="benefits-row">
+          <div class="benefit"><span class="check">✓</span> 조식포함 특가</div>
+          <div class="b-sep"></div>
+          <div class="benefit"><span class="check">✓</span> 락바 우선입장</div>
+          <div class="b-sep"></div>
+          <div class="benefit"><span class="check">✓</span> 무료취소</div>
+        </div>
+
+        <!-- Urgency note -->
+        <div class="urgency-note">
+          🔥 8월 체크인 얼리버드 마감 D-13 · 한정 수량
+        </div>
+      </div>
+
+      <!-- Starburst -->
+      <div class="seal-wrap">
+        <div class="seal-star"></div>
+        <div class="seal-inner">
+          <div class="seal-text">단독<br>혜택</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-bar">
+        <span class="cta-text">아야나 혜택 확인하기</span>
+        <span class="cta-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
