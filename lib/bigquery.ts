@@ -19,6 +19,7 @@
  */
 
 import { BigQuery } from '@google-cloud/bigquery';
+import { createRedashBQShim, type BQLike } from './redash';
 import {
   City, CITIES, CITY_BQ_MAP, TOPSELLING_CITY_BQ_MAP, DashboardData, SummaryMetrics, HotelRow,
   TrendRow, ReservationRow, CfrDailyRow, PartnerSummary, HotelDailyRow,
@@ -30,17 +31,26 @@ import {
   FpnaPeriodRow, FpnaPeriodData, FpnaPartnerData,
 } from './types';
 
-let bqClient: BigQuery | null = null;
+let bqClient: BQLike | null = null;
 
-function getBQClient(): BigQuery {
+/**
+ * REDASH_API_KEY가 있으면 Redash(data_source_id=17=mrtdata BigQuery)를 프록시로
+ * 사용한다 — GCP 서비스 계정 없이도 동작 (sync 스크립트/CI에서 사용).
+ * 없으면 로컬 gcloud ADC 또는 BIGQUERY_CREDENTIALS_JSON으로 BQ에 직접 붙는다.
+ */
+function getBQClient(): BQLike {
   if (!bqClient) {
-    const projectId = process.env.BQ_PROJECT_ID ?? 'myrealtrip-data';
-    const location = process.env.BQ_LOCATION ?? 'asia-northeast1';
-    const credentialsJson = process.env.BIGQUERY_CREDENTIALS_JSON;
-    if (credentialsJson) {
-      bqClient = new BigQuery({ credentials: JSON.parse(credentialsJson), projectId, location });
+    if (process.env.REDASH_API_KEY) {
+      bqClient = createRedashBQShim();
     } else {
-      bqClient = new BigQuery({ projectId, location });
+      const projectId = process.env.BQ_PROJECT_ID ?? 'myrealtrip-data';
+      const location = process.env.BQ_LOCATION ?? 'asia-northeast1';
+      const credentialsJson = process.env.BIGQUERY_CREDENTIALS_JSON;
+      bqClient = (
+        credentialsJson
+          ? new BigQuery({ credentials: JSON.parse(credentialsJson), projectId, location })
+          : new BigQuery({ projectId, location })
+      ) as unknown as BQLike;
     }
   }
   return bqClient;
@@ -151,7 +161,7 @@ export async function fetchDashboardData(basisMonth: string, city: City): Promis
 // ---------------------------------------------------------------------------
 
 async function fetchSummary(
-  bq: BigQuery, startDate: string, endDate: string, city: City
+  bq: BQLike, startDate: string, endDate: string, city: City
 ): Promise<SummaryMetrics[]> {
   // 역매핑 (BQ city_key_name → 한글)
   const reverseMap: Record<string, City> = {};
@@ -261,7 +271,7 @@ async function fetchSummary(
 // ---------------------------------------------------------------------------
 
 async function fetchDetailUv(
-  bq: BigQuery, startDate: string, endDate: string, city: City
+  bq: BQLike, startDate: string, endDate: string, city: City
 ): Promise<Record<string, { detailUv: number; purchaseCompleteUv: number }>> {
   const query = `
     ${buildBaseCTEs(city, startDate, endDate)}
@@ -310,7 +320,7 @@ async function fetchDetailUv(
 // ---------------------------------------------------------------------------
 
 async function fetchPartnerSummary(
-  bq: BigQuery, startDate: string, endDate: string, city: City
+  bq: BQLike, startDate: string, endDate: string, city: City
 ): Promise<PartnerSummary[]> {
   const query = `
     ${buildBaseCTEs(city, startDate, endDate)}
@@ -347,7 +357,7 @@ async function fetchPartnerSummary(
 // ---------------------------------------------------------------------------
 
 async function fetchHotels(
-  bq: BigQuery, startDate: string, endDate: string, city: City
+  bq: BQLike, startDate: string, endDate: string, city: City
 ): Promise<HotelRow[]> {
   const query = `
     ${buildBaseCTEs(city, startDate, endDate)},
@@ -406,7 +416,7 @@ async function fetchHotels(
 // ---------------------------------------------------------------------------
 
 async function fetchTrends(
-  bq: BigQuery, startDate: string, endDate: string, city: City
+  bq: BQLike, startDate: string, endDate: string, city: City
 ): Promise<TrendRow[]> {
   const isAll = city === '전체';
 
@@ -494,7 +504,7 @@ async function fetchTrends(
 // Hotel Daily — 호텔별 최근 14일 일별 예약/매출 (전일 대비 분석용)
 // ---------------------------------------------------------------------------
 
-async function fetchHotelDaily(bq: BigQuery, city: City): Promise<HotelDailyRow[]> {
+async function fetchHotelDaily(bq: BQLike, city: City): Promise<HotelDailyRow[]> {
   const cityClause = city === '전체'
     ? ''
     : `AND g.CITY_NM IN (${CITY_BQ_MAP[city].map(c => `'${c}'`).join(', ')})`;
@@ -1033,7 +1043,7 @@ export async function fetchNegativeCmDaily(
 // ---------------------------------------------------------------------------
 
 async function fetchPeriodData(
-  bq: BigQuery,
+  bq: BQLike,
   periods: string[],         // e.g. ['2026-W14', '2026-W13', ...]
   periodFmt: string,         // BQ FORMAT_DATE format string
   startDate: string,

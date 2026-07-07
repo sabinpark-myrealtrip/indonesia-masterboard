@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { City, DailyInsight, TrendRow } from '@/lib/types';
+import { City, DailyInsight, TrendRow, DashboardData } from '@/lib/types';
 import { generateDummyData } from '@/lib/dummy';
-import { fetchDashboardData } from '@/lib/bigquery';
+import { getCached } from '@/lib/supabase-cache';
 import { getTargets } from '@/lib/targets';
 import { format, subDays } from 'date-fns';
 
@@ -36,9 +36,16 @@ export async function GET(req: NextRequest) {
   const city = (searchParams.get('city') ?? '전체') as City;
 
   try {
-    const data = USE_DUMMY
-      ? generateDummyData(basisMonth, city)
-      : await fetchDashboardData(basisMonth, city);
+    let data: DashboardData;
+    if (USE_DUMMY) {
+      data = generateDummyData(basisMonth, city);
+    } else {
+      const cached = await getCached<DashboardData>(`dashboard:${basisMonth}:${city}`);
+      if (!cached) {
+        return NextResponse.json({ error: '캐시된 데이터 없음 - sync 필요' }, { status: 503 });
+      }
+      data = cached.data;
+    }
 
     // 목표치 주입
     data.summary = data.summary.map(s => {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateMonthlyDummy } from '@/lib/dummyMonthly';
-import { fetchMonthlyData } from '@/lib/bigquery';
+import { getCached } from '@/lib/supabase-cache';
 
 const USE_DUMMY = process.env.USE_DUMMY !== 'false';
 
@@ -9,10 +9,10 @@ export async function GET(req: NextRequest) {
   const month = searchParams.get('month') ?? new Date().toISOString().slice(0, 7);
 
   try {
-    const data = USE_DUMMY
-      ? generateMonthlyDummy(month)
-      : await fetchMonthlyData(month);
-    return NextResponse.json(data);
+    if (USE_DUMMY) return NextResponse.json(generateMonthlyDummy(month));
+    const cached = await getCached(`monthly:${month}`);
+    if (!cached) return NextResponse.json({ error: '캐시된 데이터 없음 - sync 필요' }, { status: 503 });
+    return NextResponse.json(cached.data);
   } catch (err) {
     console.error('Monthly API error:', err);
     return NextResponse.json({ error: 'Failed' }, { status: 500 });

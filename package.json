@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync": "tsx scripts/sync.ts",
+    "sync:local": "tsx --env-file=.env.local scripts/sync.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
     "@google-cloud/bigquery": "^7.9.1",
+    "@supabase/supabase-js": "^2.110.0",
     "@types/leaflet": "^1.9.21",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -30,6 +33,7 @@
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }
