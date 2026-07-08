@@ -1,15 +1,25 @@
 import { BigQuery } from '@google-cloud/bigquery';
+import { createRedashBQShim, type BQLike } from './redash';
 
-let bqClient: BigQuery | null = null;
+let bqClient: BQLike | null = null;
 
-function getBQClient(): BigQuery {
+/**
+ * REDASH_API_KEY가 있으면 Redash(data_source_id=17=mrtdata BigQuery)를 프록시로
+ * 사용한다 — GCP 서비스 계정 없이도 동작 (Vercel 프로덕션).
+ * 없으면 로컬 gcloud ADC 또는 BIGQUERY_CREDENTIALS_JSON으로 BQ에 직접 붙는다.
+ */
+function getBQClient(): BQLike {
   if (!bqClient) {
-    const projectId = process.env.BQ_PROJECT_ID ?? 'mrtdata';
-    const credentialsJson = process.env.BIGQUERY_CREDENTIALS_JSON;
-    if (credentialsJson) {
-      bqClient = new BigQuery({ credentials: JSON.parse(credentialsJson), projectId });
+    if (process.env.REDASH_API_KEY) {
+      bqClient = createRedashBQShim();
     } else {
-      bqClient = new BigQuery({ projectId });
+      const projectId = process.env.BQ_PROJECT_ID ?? 'mrtdata';
+      const credentialsJson = process.env.BIGQUERY_CREDENTIALS_JSON;
+      bqClient = (
+        credentialsJson
+          ? new BigQuery({ credentials: JSON.parse(credentialsJson), projectId })
+          : new BigQuery({ projectId })
+      ) as unknown as BQLike;
     }
   }
   return bqClient;

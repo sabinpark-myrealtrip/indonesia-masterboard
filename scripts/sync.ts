@@ -29,6 +29,7 @@ import {
   fetchFpnaMonthlyDataWithPartners,
   fetchFpnaYearlyData,
 } from '../lib/bigquery';
+import { fetchBaliCatalog } from '../lib/bigquery-bali';
 
 if (!process.env.REDASH_API_KEY) {
   throw new Error('REDASH_API_KEY가 없습니다. sync는 Redash 프록시로만 실행합니다 (BQ 서비스 계정 불필요).');
@@ -88,6 +89,7 @@ const jobs: Job[] = [
     key: `topselling:${city}`,
     run: () => fetchTopSelling(city),
   })),
+  { key: 'bali_catalog', run: () => fetchBaliCatalog() },
 ];
 
 async function main() {

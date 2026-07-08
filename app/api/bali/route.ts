@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { fetchBaliCatalog } from '@/lib/bigquery-bali';
+import { getCached } from '@/lib/supabase-cache';
+import { BaliOptionRow } from '@/lib/bigquery-bali';
 
 const USE_DUMMY = process.env.USE_DUMMY !== 'false';
 
@@ -8,8 +9,8 @@ export async function GET() {
     return NextResponse.json([]);
   }
   try {
-    const data = await fetchBaliCatalog();
-    return NextResponse.json(data);
+    const cached = await getCached<BaliOptionRow[]>('bali_catalog');
+    return NextResponse.json(cached?.data ?? []);
   } catch (err) {
     console.error('Bali catalog API error:', err);
     return NextResponse.json({ error: 'Failed' }, { status: 500 });
