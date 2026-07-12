@@ -1,9 +1,9 @@
 name: Sync BQ data to Supabase
 
 on:
-  schedule:
-    # 09:00, 13:00, 18:00 KST = 00:00, 04:00, 09:00 UTC
-    - cron: '0 0,4,9 * * *'
+  # GitHub 호스팅 러너는 redash.myrealtrip.net(내부망 전용, 10.30.x.x)에 접근할 수 없어
+  # 정기 schedule 트리거는 100% 실패한다. 대신 로컬 launchd(scripts/sync-cron.sh)가
+  # 하루 3번(09/13/18시 KST) 내부망에서 직접 sync를 실행한다. 이 workflow는 수동 실행용으로만 유지.
   workflow_dispatch: {}
 
 jobs:
