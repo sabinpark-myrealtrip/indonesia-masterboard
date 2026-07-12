@@ -18,7 +18,6 @@ import TrafficSources from './TrafficSources';
 import DailyTable from './DailyTable';
 import BaliSeasonality from './BaliSeasonality';
 import CityDistribution from './CityDistribution';
-import BaliPartnerManagement from './BaliPartnerManagement';
 import BaliCatalog from './BaliCatalog';
 import FpnaDailyTable from './FpnaDailyTable';
 import FpnaMonthlyTable from './FpnaMonthlyTable';
@@ -45,7 +44,7 @@ function fmtKrw(n: number) {
 }
 
 
-type NavPage = City | 'indonesia-data' | 'topselling' | 'negative-cm' | 'traffic-sources' | 'city-distribution' | 'partner-management' | 'bali-catalog';
+type NavPage = City | 'indonesia-data' | 'topselling' | 'negative-cm' | 'traffic-sources' | 'city-distribution' | 'bali-catalog';
 type DataViewMode = 'booking' | 'performance';
 
 
@@ -85,10 +84,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [targetInputs, setTargetInputs] = useState<TargetInputs>({ monthlyGmv: '', monthlyCm: '', dailyGmv: '', dailyCm: '' });
 
-  const city: City = (page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'partner-management' || page === 'bali-catalog') ? '전체' : page;
+  const city: City = (page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'bali-catalog') ? '전체' : page;
 
   const fetchData = useCallback(async () => {
-    if (page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'partner-management' || page === 'bali-catalog') { setLoading(false); return; }
+    if (page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'bali-catalog') { setLoading(false); return; }
     setLoading(true);
     try {
       const res = await fetch(`/api/dashboard?month=${month}&city=${encodeURIComponent(city)}`);
@@ -128,7 +127,7 @@ export default function Dashboard() {
   const citySummaries = data?.summary?.filter(s => s.city !== '전체') ?? [];
 
   const analysis = useMemo(() => {
-    if (!data || page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'partner-management' || page === 'bali-catalog') return null;
+    if (!data || page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'bali-catalog') return null;
     return analyzeDashboard({
       trends: data.trends,
       partnerSummary: data.partnerSummary,
@@ -143,8 +142,7 @@ export default function Dashboard() {
     : page === 'negative-cm' ? '역마진 호텔 분석'
     : page === 'traffic-sources' ? '유입 데이터'
     : page === 'city-distribution' ? '도시별 예약 분포'
-    : page === 'partner-management' ? '발리 파트너 관리'
-    : page === 'bali-catalog' ? '발리 상품 카탈로그'
+    : page === 'bali-catalog' ? '상품 현황'
     : city === '전체' ? '인도네시아 현황'
     : `${CITY_DISPLAY[city]} 현황`;
 
@@ -262,22 +260,8 @@ export default function Dashboard() {
 {/* 구분선 */}
           <div className="mx-4 my-2 border-t border-slate-700/60" />
 
-          {/* 파트너 관리 탭 */}
+          {/* 상품 현황 탭 */}
           <p className="px-4 pt-1 pb-1 text-[10px] text-slate-600 uppercase tracking-widest font-semibold">파트너</p>
-          <button
-            onClick={() => setPage('partner-management')}
-            className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all text-left ${
-              page === 'partner-management'
-                ? 'bg-slate-700/80 text-white font-semibold'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-            }`}
-          >
-            <span className="text-base w-5 text-center leading-none">🤝</span>
-            <span>발리 파트너 관리</span>
-            {page === 'partner-management' && (
-              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0" />
-            )}
-          </button>
           <button
             onClick={() => setPage('bali-catalog')}
             className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all text-left ${
@@ -287,7 +271,7 @@ export default function Dashboard() {
             }`}
           >
             <span className="text-base w-5 text-center leading-none">📋</span>
-            <span>상품 카탈로그</span>
+            <span>상품 현황</span>
             {page === 'bali-catalog' && (
               <span className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
             )}
@@ -332,10 +316,7 @@ export default function Dashboard() {
         {/* 스크롤 영역 */}
         <main className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
 
-          {/* ── 파트너 관리 탭 ── */}
-          {page === 'partner-management' && <BaliPartnerManagement />}
-
-          {/* ── 상품 카탈로그 탭 ── */}
+          {/* ── 상품 현황 탭 ── */}
           {page === 'bali-catalog' && <BaliCatalog />}
 
           {/* ── 도시별 예약 분포 탭 ── */}
@@ -412,7 +393,7 @@ export default function Dashboard() {
           {page === 'traffic-sources' && <TrafficSources />}
 
           {/* ── 지역별 현황 탭 ── */}
-          {page !== 'indonesia-data' && page !== 'topselling' && page !== 'negative-cm' && page !== 'traffic-sources' && page !== 'city-distribution' && page !== 'partner-management' && page !== 'bali-catalog' && (
+          {page !== 'indonesia-data' && page !== 'topselling' && page !== 'negative-cm' && page !== 'traffic-sources' && page !== 'city-distribution' && page !== 'bali-catalog' && (
             <>
               {loading && (
                 <div className="flex items-center justify-center py-24">
