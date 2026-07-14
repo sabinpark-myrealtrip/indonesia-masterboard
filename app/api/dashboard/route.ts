@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: '캐시된 데이터 없음 - sync 필요' }, { status: 503 });
       }
       data = cached.data;
+      data.syncedAt = cached.syncedAt;
     }
 
     // 목표치 주입

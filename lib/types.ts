@@ -267,6 +267,7 @@ export interface DashboardData {
   cfrDaily: CfrDailyRow[];
   basisMonth: string;
   dailyInsight?: DailyInsight;
+  syncedAt?: string;
 }
 
 export interface CityDistributionRow {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { differenceInHours, format } from 'date-fns';
 import { City, CITIES, CITY_COLORS, DashboardData } from '@/lib/types';
 import { analyzeDashboard } from '@/lib/analyzer';
 import KpiCards from './KpiCards';
@@ -125,6 +126,10 @@ export default function Dashboard() {
     targetCm:  parseWon(targetInputs.monthlyCm)  ?? rawSummary.targetCm,
   } : undefined;
   const citySummaries = data?.summary?.filter(s => s.city !== '전체') ?? [];
+
+  // sync는 하루 3번(09/13/18시) 도는데, 8시간 넘게 안 돌았으면 예정된 회차를 하나 이상 놓친 것
+  const syncHoursAgo = data?.syncedAt ? differenceInHours(new Date(), new Date(data.syncedAt)) : null;
+  const syncStale = syncHoursAgo !== null && syncHoursAgo >= 8;
 
   const analysis = useMemo(() => {
     if (!data || page === 'indonesia-data' || page === 'topselling' || page === 'negative-cm' || page === 'traffic-sources' || page === 'city-distribution' || page === 'bali-catalog') return null;
@@ -293,6 +298,12 @@ export default function Dashboard() {
             <p className="text-xs text-slate-400 mt-0.5">마이리얼트립 인도네시아 숙소 성과 대시보드</p>
           </div>
           <div className="flex items-center gap-2.5">
+            {data?.syncedAt && (
+              <p className={`text-[11px] ${syncStale ? 'text-red-500 font-semibold' : 'text-slate-400'}`}>
+                최근 동기화 {format(new Date(data.syncedAt), 'MM/dd HH:mm')}
+                {syncStale && ' (지연됨)'}
+              </p>
+            )}
             <select
               value={month}
               onChange={e => setMonth(e.target.value)}
